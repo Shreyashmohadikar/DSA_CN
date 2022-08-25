@@ -16,7 +16,7 @@ int pairSum(int *arr, int n, int num)
             i++;
             j--;
         }
-        else if(k > num){
+        else if(k > num){ 
             j--;
         }
         else{
