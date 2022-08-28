@@ -20,4 +20,4 @@ int main() {
     s -> name = 'A';
     s -> rollNo = 15;
     s -> print();
-}
+} 
