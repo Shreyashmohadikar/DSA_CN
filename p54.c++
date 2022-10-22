@@ -13,7 +13,6 @@ public:
 };
 
 using namespace std;
-#include "solution.h"
 
 Node *takeinput()
 {
@@ -38,6 +37,32 @@ Node *takeinput()
 	return head;
 }
 
+Node *deleteNode(Node *head, int pos)
+{
+    Node * curr = head;
+    int i = 0;
+    if(head == NULL){
+        return head;
+    }
+    if(pos == 0){
+        head = curr->next;
+        delete curr;
+        return head;
+    }
+    while( i < pos - 1 && curr->next != NULL){
+        curr = curr->next;
+        i++;
+    }
+    if(curr->next != NULL){
+    //     curr->next = curr->next->next;
+    //     delete curr->next;
+    Node * temp = curr->next->next;
+    delete curr->next;
+    curr->next = temp;
+    }
+    return head;
+}
+
 void print(Node *head)
 {
 	Node *temp = head;
@@ -48,21 +73,6 @@ void print(Node *head)
 	}
 	cout << endl;
 }
-
-Node *deleteNode(Node *head, int pos)
-{
-    int i = 0;
-    Node * curr = head;
-    if(head = NULL){
-        return head;
-    }
-    if(pos == 0){
-        head = curr -> next;
-        delete curr;
-        return head;
-    }
-}
-
 
 int main()
 {
