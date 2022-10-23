@@ -38,7 +38,18 @@ Node *takeinput()
 }
 
 int findNode(Node *head, int n){
-    // Write your code here.
+    int i = 0;
+	Node * curr = head;
+	while(curr != NULL){
+		if(curr->data == n){
+			return i;
+		}
+		else{
+			i++;
+			curr = curr->next;
+		}
+	}
+	return -1;
 }
 
 int main()
