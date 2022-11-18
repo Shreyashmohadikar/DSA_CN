@@ -16,38 +16,25 @@ class BinaryTreeNode {
 };
 
 using namespace std;
-void printLevelWise(BinaryTreeNode<int> *root) {
-	if(root == NULL){
-        return;
+int height(BinaryTreeNode<int>* root) {
+    int h = 0;
+    if(root == NULL){
+        return h;
     }
-    queue<BinaryTreeNode<int> *> pendingNodes;
-    pendingNodes.push(root);
-    while(pendingNodes.size() != 0){
-        BinaryTreeNode<int> * front = pendingNodes.front();
-        pendingNodes.pop();
-        cout<<front->data<<":";
-        if(front->left != NULL){
-            cout<<"L:"<<front->left->data;
-            pendingNodes.push(front->left);
-        }
-        else{
-            cout<<"L:-1";
-        }
-        cout << ",";
-        if(front->right != NULL){
-            cout<<"R:"<<front->right->data;
-            pendingNodes.push(front->right);
-        }
-        else{
-            cout<<"R:-1";
-        }
-        cout<<"\n";
+    int left_tree = height(root->left);
+    int right_tree = height(root->right);
+
+    if(left_tree > right_tree){
+        return 1 + left_tree;
     }
+    else{
+        return 1 + right_tree;
+    }
+
 }
 
 BinaryTreeNode<int>* takeInput() {
     int rootData;
-
     cin >> rootData;
     if (rootData == -1) {
         return NULL;
@@ -80,5 +67,5 @@ BinaryTreeNode<int>* takeInput() {
 
 int main() {
     BinaryTreeNode<int>* root = takeInput();
-    printLevelWise(root);
+    cout << height(root);
 }
