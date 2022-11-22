@@ -17,11 +17,42 @@ class BinaryTreeNode {
 
 using namespace std;
 
-bool isBalanced(BinaryTreeNode<int> *root) {
-	if(root == NULL){
+void heightMax(BinaryTreeNode<int> *root, int height, int *max)
+{
+    if (root == NULL)
+        return;
+    if ((*max) < height)
+        *max = height;
+    if (root->left != NULL)
+        heightMax(root->left, 1 + height, max);
+    if (root->right != NULL)
+        heightMax(root->right, 1 + height, max);
+}
+int height(BinaryTreeNode<int> *root)
+{
+    // Write our code here
+    if (root == NULL)
+        return 0;
+    int height = 1, max = 1;
+    heightMax(root, height, &max);
+    return max;
+}
+bool isBalanced(BinaryTreeNode<int> *root)
+{
+    // Write your code here
+    if (root == NULL)
         return true;
+    bool val1 = isBalanced(root->left);
+    bool val2 = isBalanced(root->right);
+    if (val1 && val2)
+    {
+        if (abs(height(root->left) - height(root->right)) <= 1)
+            return true;
+        else
+            return false;
     }
-    
+    else
+        return false;
 }
 
 BinaryTreeNode<int>* takeInput() {
