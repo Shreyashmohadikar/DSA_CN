@@ -1,4 +1,4 @@
-// Create & Insert Duplicate Node
+//Replace with Sum of greater nodes
 #include <iostream>
 #include <queue>
 
@@ -6,59 +6,65 @@ template <typename T>
 class BinaryTreeNode {
    public:
     T data;
-    BinaryTreeNode<T>* left;
-    BinaryTreeNode<T>* right;
+    BinaryTreeNode<T> *left;
+    BinaryTreeNode<T> *right;
 
     BinaryTreeNode(T data) {
         this->data = data;
         left = NULL;
         right = NULL;
     }
+
+    ~BinaryTreeNode() {
+        if (left) delete left;
+        if (right) delete right;
+    }
 };
 
 using namespace std;
-void insertDuplicateNode(BinaryTreeNode<int> *root)
+
+int replace(BinaryTreeNode<int> *root, int sum)
 {
-    // Write your code here
+    if (root == NULL)
+        return sum;
+    sum = replace(root->right, sum);
+    sum = sum + root->data;
+    root->data = sum;
+    sum = replace(root->left, sum);
+    return sum;
+}
+void replaceWithLargerNodesSum(BinaryTreeNode<int> *root)
+{
     if (root == NULL)
         return;
-    if (root->left != NULL)
-    {
-        BinaryTreeNode<int> *temp1 = root->left;
-        BinaryTreeNode<int> *temp2 = new BinaryTreeNode<int>(root->data);
-        root->left = temp2;
-        temp2->left = temp1;
-    }
-    else
-    {
-        BinaryTreeNode<int> *temp = new BinaryTreeNode<int>(root->data);
-        root->left = temp;
-    }
-    insertDuplicateNode(root->left->left);
-    insertDuplicateNode(root->right);
+    int ans = replace(root, 0);
+    return;
 }
-BinaryTreeNode<int>* takeInput() {
+BinaryTreeNode<int> *takeInput() {
     int rootData;
+
     cin >> rootData;
     if (rootData == -1) {
         return NULL;
     }
-    BinaryTreeNode<int>* root = new BinaryTreeNode<int>(rootData);
-    queue<BinaryTreeNode<int>*> q;
+    BinaryTreeNode<int> *root = new BinaryTreeNode<int>(rootData);
+    queue<BinaryTreeNode<int> *> q;
     q.push(root);
     while (!q.empty()) {
-        BinaryTreeNode<int>* currentNode = q.front();
+        BinaryTreeNode<int> *currentNode = q.front();
         q.pop();
         int leftChild, rightChild;
+
         cin >> leftChild;
         if (leftChild != -1) {
-            BinaryTreeNode<int>* leftNode = new BinaryTreeNode<int>(leftChild);
+            BinaryTreeNode<int> *leftNode = new BinaryTreeNode<int>(leftChild);
             currentNode->left = leftNode;
             q.push(leftNode);
         }
+
         cin >> rightChild;
         if (rightChild != -1) {
-            BinaryTreeNode<int>* rightNode =
+            BinaryTreeNode<int> *rightNode =
                 new BinaryTreeNode<int>(rightChild);
             currentNode->right = rightNode;
             q.push(rightNode);
@@ -67,12 +73,15 @@ BinaryTreeNode<int>* takeInput() {
     return root;
 }
 
-void printLevelATNewLine(BinaryTreeNode<int>* root) {
-    queue<BinaryTreeNode<int>*> q;
+void printLevelATNewLine(BinaryTreeNode<int> *root) {
+    if (root == NULL) {
+        return;
+    }
+    queue<BinaryTreeNode<int> *> q;
     q.push(root);
     q.push(NULL);
     while (!q.empty()) {
-        BinaryTreeNode<int>* first = q.front();
+        BinaryTreeNode<int> *first = q.front();
         q.pop();
         if (first == NULL) {
             if (q.empty()) {
@@ -93,8 +102,8 @@ void printLevelATNewLine(BinaryTreeNode<int>* root) {
 }
 
 int main() {
-    BinaryTreeNode<int>* root = takeInput();
-    insertDuplicateNode(root);
+    BinaryTreeNode<int> *root = takeInput();
+    replaceWithLargerNodesSum(root);
     printLevelATNewLine(root);
     delete root;
 }

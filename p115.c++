@@ -1,4 +1,4 @@
-// Create & Insert Duplicate Node
+//Largest BST
 #include <iostream>
 #include <queue>
 
@@ -14,31 +14,65 @@ class BinaryTreeNode {
         left = NULL;
         right = NULL;
     }
+    ~BinaryTreeNode() {
+        if (left) delete left;
+        if (right) delete right;
+    }
 };
 
 using namespace std;
-void insertDuplicateNode(BinaryTreeNode<int> *root)
+
+#include <climits>
+#include <cmath>
+class Pair
 {
-    // Write your code here
+
+public:
+    int minimum;
+    int maximum;
+    bool bst;
+    int height;
+};
+Pair BST(BinaryTreeNode<int> *root)
+{
     if (root == NULL)
-        return;
-    if (root->left != NULL)
     {
-        BinaryTreeNode<int> *temp1 = root->left;
-        BinaryTreeNode<int> *temp2 = new BinaryTreeNode<int>(root->data);
-        root->left = temp2;
-        temp2->left = temp1;
+        Pair obj;
+        obj.minimum = INT_MAX;
+        obj.maximum = INT_MIN;
+        obj.bst = true;
+        obj.height = 0;
+        return obj;
+    }
+
+    Pair left = BST(root->left);
+    Pair right = BST(root->right);
+
+    int minimum = min(root->data, min(left.minimum, right.minimum));
+    int maximum = max(root->data, max(left.maximum, right.maximum));
+    bool isBSTfinal = (root->data > left.maximum) && (root->data < right.minimum) && left.bst && right.bst;
+
+    Pair obj;
+    obj.minimum = minimum;
+    obj.maximum = maximum;
+    obj.bst = isBSTfinal;
+    if (isBSTfinal)
+    {
+        obj.height = 1 + max(left.height, right.height);
     }
     else
-    {
-        BinaryTreeNode<int> *temp = new BinaryTreeNode<int>(root->data);
-        root->left = temp;
-    }
-    insertDuplicateNode(root->left->left);
-    insertDuplicateNode(root->right);
+        obj.height = max(left.height, right.height);
+    return obj;
+}
+
+int largestBSTSubtree(BinaryTreeNode<int> *root)
+{
+    // Write your code here
+    return BST(root).height;
 }
 BinaryTreeNode<int>* takeInput() {
     int rootData;
+    
     cin >> rootData;
     if (rootData == -1) {
         return NULL;
@@ -50,12 +84,14 @@ BinaryTreeNode<int>* takeInput() {
         BinaryTreeNode<int>* currentNode = q.front();
         q.pop();
         int leftChild, rightChild;
+       
         cin >> leftChild;
         if (leftChild != -1) {
             BinaryTreeNode<int>* leftNode = new BinaryTreeNode<int>(leftChild);
             currentNode->left = leftNode;
             q.push(leftNode);
         }
+        
         cin >> rightChild;
         if (rightChild != -1) {
             BinaryTreeNode<int>* rightNode =
@@ -67,34 +103,8 @@ BinaryTreeNode<int>* takeInput() {
     return root;
 }
 
-void printLevelATNewLine(BinaryTreeNode<int>* root) {
-    queue<BinaryTreeNode<int>*> q;
-    q.push(root);
-    q.push(NULL);
-    while (!q.empty()) {
-        BinaryTreeNode<int>* first = q.front();
-        q.pop();
-        if (first == NULL) {
-            if (q.empty()) {
-                break;
-            }
-            cout << endl;
-            q.push(NULL);
-            continue;
-        }
-        cout << first->data << " ";
-        if (first->left != NULL) {
-            q.push(first->left);
-        }
-        if (first->right != NULL) {
-            q.push(first->right);
-        }
-    }
-}
-
 int main() {
     BinaryTreeNode<int>* root = takeInput();
-    insertDuplicateNode(root);
-    printLevelATNewLine(root);
+    cout << largestBSTSubtree(root);
     delete root;
 }

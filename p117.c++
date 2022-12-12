@@ -1,4 +1,4 @@
-// Create & Insert Duplicate Node
+//Path Sum Root to Leaf
 #include <iostream>
 #include <queue>
 
@@ -14,31 +14,48 @@ class BinaryTreeNode {
         left = NULL;
         right = NULL;
     }
+
+    ~BinaryTreeNode() {
+        if (left) delete left;
+        if (right) delete right;
+    }
 };
 
 using namespace std;
-void insertDuplicateNode(BinaryTreeNode<int> *root)
+
+#include <vector>
+void rootToLeafPathsSumToK(BinaryTreeNode<int> *root, int k, vector<int> path)
 {
-    // Write your code here
     if (root == NULL)
         return;
-    if (root->left != NULL)
+    path.push_back(root->data);
+    k = k - root->data;
+    if (!root->left && !root->right)
     {
-        BinaryTreeNode<int> *temp1 = root->left;
-        BinaryTreeNode<int> *temp2 = new BinaryTreeNode<int>(root->data);
-        root->left = temp2;
-        temp2->left = temp1;
+        if (k == 0)
+        {
+            for (int i : path)
+            {
+                cout << i << " ";
+            }
+            cout << endl;
+        }
+        path.pop_back();
+        return;
     }
-    else
-    {
-        BinaryTreeNode<int> *temp = new BinaryTreeNode<int>(root->data);
-        root->left = temp;
-    }
-    insertDuplicateNode(root->left->left);
-    insertDuplicateNode(root->right);
+    rootToLeafPathsSumToK(root->left, k, path);
+    rootToLeafPathsSumToK(root->right, k, path);
+}
+void rootToLeafPathsSumToK(BinaryTreeNode<int> *root, int k)
+{
+    // Write your code here
+    vector<int> v;
+    rootToLeafPathsSumToK(root, k, v);
+    return;
 }
 BinaryTreeNode<int>* takeInput() {
     int rootData;
+
     cin >> rootData;
     if (rootData == -1) {
         return NULL;
@@ -50,12 +67,14 @@ BinaryTreeNode<int>* takeInput() {
         BinaryTreeNode<int>* currentNode = q.front();
         q.pop();
         int leftChild, rightChild;
+
         cin >> leftChild;
         if (leftChild != -1) {
             BinaryTreeNode<int>* leftNode = new BinaryTreeNode<int>(leftChild);
             currentNode->left = leftNode;
             q.push(leftNode);
         }
+
         cin >> rightChild;
         if (rightChild != -1) {
             BinaryTreeNode<int>* rightNode =
@@ -67,34 +86,10 @@ BinaryTreeNode<int>* takeInput() {
     return root;
 }
 
-void printLevelATNewLine(BinaryTreeNode<int>* root) {
-    queue<BinaryTreeNode<int>*> q;
-    q.push(root);
-    q.push(NULL);
-    while (!q.empty()) {
-        BinaryTreeNode<int>* first = q.front();
-        q.pop();
-        if (first == NULL) {
-            if (q.empty()) {
-                break;
-            }
-            cout << endl;
-            q.push(NULL);
-            continue;
-        }
-        cout << first->data << " ";
-        if (first->left != NULL) {
-            q.push(first->left);
-        }
-        if (first->right != NULL) {
-            q.push(first->right);
-        }
-    }
-}
-
 int main() {
     BinaryTreeNode<int>* root = takeInput();
-    insertDuplicateNode(root);
-    printLevelATNewLine(root);
+    int k;
+    cin >> k;
+    rootToLeafPathsSumToK(root, k);
     delete root;
 }
